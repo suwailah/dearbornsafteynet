@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dearborn SafetyNet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="report.html">Report an Incident</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Welcome to Dearborn SafetyNet</h1>
+    <p>
+      Dearborn SafetyNet is a community-driven platform where residents can report local issues such as potholes, damaged streetlights, or speeding incidents. Together, we can make Dearborn a safer place!
+    </p>
+
+    <div class="message success">
+      <p>Empower your community by reporting incidents and staying informed.</p>
+    </div>
+
+    <!-- Quick Access Buttons -->
+    <div style="text-align: center;">
+      <a href="register.html"><button>Register</button></a>
+      <a href="login.html"><button>Login</button></a>
+      <a href="report.html"><button>Report an Incident</button></a>
+    </div>
+  </div>
+<script>
+    // Check if the user is logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = localStorage.getItem('user');
+      console.log(user);
+      if (user) {
+        document.getElementById('content').innerHTML = `<p>Welcome back, ${user}!</p>`;
+      } else {
+        document.getElementById('content').innerHTML = `<p>Please <a href="login.html">log in</a> to access more features.</p>`;
+      }
+    });
+  </script>
+  <li><a href="#" id="logout">Logout</a></li>
+
+  <script>
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('user');
+      alert('You have been logged out.');
+      window.location.href = 'index.html';
+    });
+  </script>
+  
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 Dearborn SafetyNet. All rights reserved.</p>
+  </footer>
+  
+</body>
+</html>
+
+  

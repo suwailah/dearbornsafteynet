@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Incidents</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Simple styling for better display */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        #incidentsContainer {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .incident {
+            border-bottom: 1px solid #ccc;
+            padding: 15px 0;
+        }
+        .incident:last-child {
+            border-bottom: none;
+        }
+        .incident h2 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .incident p {
+            margin: 5px 0;
+        }
+        .incident img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchIncidents();
+        });
+
+        async function fetchIncidents() {
+            try {
+                const response = await fetch('http://localhost:5000/incidents');
+                
+                // Check if the response is OK
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
+                }
+                
+                const incidents = await response.json();
+                
+                const incidentsContainer = document.getElementById('incidentsContainer');
+                incidentsContainer.innerHTML = ''; // Clear any loading message
+
+                const user = JSON.parse(localStorage.getItem('user'));
+                const filterIncidents = incidents.filter(x => x.user_id === user.user.user_id);
+                if (!filterIncidents || filterIncidents.length === 0) {
+                    incidentsContainer.innerHTML = '<p>No incidents reported yet.</p>';
+                    return;
+                }
+
+                filterIncidents.forEach(incident => {
+                    const incidentElement = document.createElement('div');
+                    incidentElement.classList.add('incident');
+
+                    incidentElement.innerHTML = `
+                        <h2>${incident.title || 'No Title'}</h2>
+                        <p><strong>Description:</strong> ${incident.description || 'No Description'}</p>
+                        <p><strong>Location:</strong> ${incident.location || 'No Location'}</p>
+                        <p><strong>Date:</strong> ${incident.date_created ? new Date(incident.date_created).toLocaleString() : 'No Date'}</p>
+                        ${incident.photo ? `<img src="${incident.photo}" alt="Incident Photo">` : ''}
+                    `;
+
+                    incidentsContainer.appendChild(incidentElement);
+                });
+            } catch (error) {
+                console.error('Error fetching incidents:', error);
+                document.getElementById('incidentsContainer').innerHTML = '<p>Error loading incidents. Please try again later.</p>';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Reported Incidents</h1>
+    <nav>
+        <a href="userindex.html">Home</a>
+        <a href="report.html">Report an Incident</a>
+    </nav>
+    <div id="incidentsContainer">Loading...</div>
+</body>
+</html>

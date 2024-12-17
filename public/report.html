@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Report an Incident</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+
+    <h1>Report an Incident</h1>
+
+    <form id="incidentForm">
+
+        <label>Title:</label><br>
+
+        <input type="text" id="title" required><br>
+
+        <label>Description:</label><br>
+
+        <textarea id="description" required></textarea><br>
+
+        <label>Location:</label><br>
+
+        <input type="text" id="location" required><br>
+
+        <label>Photo URL:</label><br>
+
+        <input type="text" id="photo"><br>
+
+        <button type="submit">Submit</button>
+
+    </form>
+    <script>
+        document.getElementById('incidentForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const title = document.getElementById('title').value;
+          const description = document.getElementById('description').value;
+          const location = document.getElementById('location').value;
+          const photoURL = document.getElementById('photo').value;
+          const user = JSON.parse(localStorage.getItem('user'));
+          let id;
+          if(user === null){
+            id = null;
+          }
+          else{
+            id = user.user.user_id;
+          }
+          try {
+            const response = await fetch('http://localhost:5000/incidents', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ title: title, description: description, location: location, photoURL: photoURL, user_id: id })
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+              alert('Returning to Home page');
+              if(id === null){
+                window.location.href = 'index.html';
+              }
+              else{
+                window.location.href = 'incidents.html';
+              }
+            } else {
+              document.getElementById('message').textContent = data.message;
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('message').textContent = 'An error occurred.';
+          }
+        });
+      </script>
+</body>
+
+</html>
